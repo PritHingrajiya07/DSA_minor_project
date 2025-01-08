@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Structures UI</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            margin-bottom: 20px;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .card-header {
+            background-color: #343a40;
+            color: white;
+        }
+        .card-stack:hover .card-header {
+            background-color: #ff6f61;
+        }
+        .card-queue:hover .card-header {
+            background-color: #6bff61;
+        }
+        .card-circular-queue:hover .card-header {
+            background-color: #61a6ff;
+        }
+        .stack-container, .queue-container, .circular-queue-container {
+            display: flex;
+            align-items: center;
+        }
+        .stack-container {
+            flex-direction: column;
+        }
+        .queue-container {
+            flex-direction: row;
+        }
+        .stack-item, .queue-item, .circular-queue-item {
+            width: 50px;
+            height: 50px;
+            background-color: #343a40;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            margin: 5px;
+            transition: transform 0.3s ease-in-out;
+        }
+        .queue-item {
+            background-color: #6bff61;
+        }
+        .circular-queue-item {
+            background-color: #61a6ff;
+            position: absolute;
+            transition: transform 0.5s ease-in-out;
+        }
+        @keyframes insertAnimation {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+        @keyframes popAnimation {
+            0% { transform: scale(1); }
+            100% { transform: scale(0); }
+        }
+        .circular-queue-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border: 2px dashed #61a6ff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Data Structures</h1>
+        <div class="input-group mb-3">
+            <input type="text" id="dataInput" class="form-control" placeholder="Enter value">
+        </div>
+        <div class="card card-stack">
+            <div class="card-header">Stack</div>
+            <div class="input-group mt-3">
+                <button class="btn btn-primary" type="button" onclick="insertStack()">Insert</button>
+                <button class="btn btn-danger" type="button" onclick="popStack()">Pop</button>
+            </div>
+            <div class="stack-container" id="stackContainer"></div>
+        </div>
+        <div class="card card-queue">
+            <div class="card-header">Queue</div>
+            <div class="input-group mt-3">
+                <button class="btn btn-primary" type="button" onclick="insertQueue()">Insert</button>
+                <button class="btn btn-danger" type="button" onclick="popQueue()">Pop</button>
+            </div>
+            <div class="queue-container" id="queueContainer"></div>
+        </div>
+        <div class="card card-circular-queue">
+            <div class="card-header">Circular Queue</div>
+            <div class="input-group mt-3">
+                <button class="btn btn-primary" type="button" onclick="insertCircularQueue()">Insert</button>
+                <button class="btn btn-danger" type="button" onclick="popCircularQueue()">Pop</button>
+            </div>
+            <div class="circular-queue-container" id="circularQueueContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        let stack = [];
+        let queue = [];
+        let circularQueue = [];
+        const circularQueueMaxSize = 8;
+
+        function insertStack() {
+            const input = document.getElementById('dataInput').value;
+            if (input) {
+                stack.unshift(input);
+                updateStack();
+                document.getElementById('dataInput').value = '';
+            }
+        }
+
+        function popStack() {
+            if (stack.length > 0) stack.shift();
+            updateStack();
+        }
+
+        function updateStack() {
+            const container = document.getElementById('stackContainer');
+            container.innerHTML = '';
+            stack.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'stack-item';
+                itemElement.textContent = item;
+                itemElement.style.animation = 'insertAnimation 0.5s';
+                container.appendChild(itemElement);
+            });
+        }
+
+        function insertQueue() {
+            const input = document.getElementById('dataInput').value;
+            if (input) {
+                queue.push(input);
+                updateQueue();
+                document.getElementById('dataInput').value = '';
+            }
+        }
+
+        function popQueue() {
+            if (queue.length > 0) queue.shift();
+            updateQueue();
+        }
+
+        function updateQueue() {
+            const container = document.getElementById('queueContainer');
+            container.innerHTML = '';
+            queue.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'queue-item';
+                itemElement.textContent = item;
+                itemElement.style.animation = 'insertAnimation 0.5s';
+                container.appendChild(itemElement);
+            });
+        }
+
+        function insertCircularQueue() {
+            const input = document.getElementById('dataInput').value;
+            if (input) {
+                if (circularQueue.length < circularQueueMaxSize) {
+                    circularQueue.push(input);
+                } else {
+                    circularQueue.shift();
+                    circularQueue.push(input);
+                }
+                updateCircularQueue();
+                document.getElementById('dataInput').value = '';
+            }
+        }
+
+        function popCircularQueue() {
+            if (circularQueue.length > 0) circularQueue.shift();
+            updateCircularQueue();
+        }
+
+        function updateCircularQueue() {
+            const container = document.getElementById('circularQueueContainer');
+            container.innerHTML = '';
+            const angleStep = 360 / circularQueue.length;
+            circularQueue.forEach((item, index) => {
+                const angle = index * angleStep;
+                const itemElement = document.createElement('div');
+                itemElement.className = 'circular-queue-item';
+                itemElement.style.transform = `rotate(${angle}deg) translate(80px) rotate(-${angle}deg)`;
+                itemElement.textContent = item;
+                itemElement.style.animation = 'insertAnimation 0.5s';
+                container.appendChild(itemElement);
+            });
+        }
+
+        let selectedDataStructure = 'stack';
+    </script>
+</body>
+</html>
